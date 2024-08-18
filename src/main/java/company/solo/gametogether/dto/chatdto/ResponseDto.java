@@ -11,9 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class ResponseDto {
-
+    private Long id; // 채팅 아이디
     private String username;
     private String messageContent;
-    private int counting;
-
+    private int unReadCount;
 }

@@ -34,23 +34,31 @@ public class Member extends BaseTimeEntity implements UserDetails {
     @OneToOne(mappedBy = "member")
     private Profile profiles;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member") //? 이걸 왜 바꾸는거지?
     private List<Board> boards = new ArrayList<>();
 
     @OneToMany(mappedBy = "member")
     private List<PointTransaction> pointTransactions = new ArrayList<>();
 
     @OneToMany(mappedBy = "member")
-    private List<UnMessage> unMessages = new ArrayList<>();
+    private List<TeamRoom> teamRooms = new ArrayList<>();
 
     @OneToMany(mappedBy = "member")
-    private List<TeamRoom> teamRooms = new ArrayList<>();
+    private List<UnReadMessage> unReadMessages = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member")
+    private List<Chat> chats = new ArrayList<>();
 
 
    //팀 룸 연관관계
     public void addTeamRoom(TeamRoom teamRoom) {
         this.teamRooms =teamRooms;
         teamRoom.addMember(this);
+    }
+
+    public void addUnReadMessage(UnReadMessage unReadMessage) {
+        this.unReadMessages.add(unReadMessage);
+        unReadMessage.setMember(this);
     }
 
 

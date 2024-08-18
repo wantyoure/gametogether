@@ -3,7 +3,6 @@ package company.solo.gametogether.config;
 import company.solo.gametogether.jwt.JwtAuthenticationFilter;
 import company.solo.gametogether.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,24 +18,30 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    @Autowired
+
     private final JwtTokenProvider jwtTokenProvider;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests((auth) -> auth.requestMatchers("/members/sign-in","/error").permitAll()
+                .authorizeHttpRequests((auth) -> auth.requestMatchers("/members/sign-in","/error","/chat").permitAll()
+                        .requestMatchers("/ws/**").permitAll() //authenticated 니중에 바꿀 예정 왜냐면 USER가 맞는지 확인해야 하기 때문
                         .requestMatchers("/members/sign-up").permitAll()
                         .requestMatchers("/members/find-user").permitAll()
                         .requestMatchers("/members/find-all").permitAll()
                         .requestMatchers("/members/{id}").permitAll()
                         .requestMatchers("/teams/create-team").permitAll()
-                        .requestMatchers("/teams/join").permitAll()
+                        .requestMatchers("/teams/team-join").permitAll()
+                        .requestMatchers("/teams/team-out").permitAll()
+                        .requestMatchers("/teams/{id}").permitAll()
+                        .requestMatchers("/chat/unread-message").permitAll()
                         .requestMatchers("/members/test").hasRole("USER")
                         .anyRequest().authenticated())
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class).build();
+
     }
 
     @Bean

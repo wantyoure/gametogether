@@ -1,9 +1,6 @@
 package company.solo.gametogether.service.membersevice;
 
-import company.solo.gametogether.dto.memberdto.MemberDto;
-import company.solo.gametogether.dto.memberdto.MemberFindUserNameDto;
-import company.solo.gametogether.dto.memberdto.MemberUpdate;
-import company.solo.gametogether.dto.memberdto.SignUpDto;
+import company.solo.gametogether.dto.memberdto.*;
 import company.solo.gametogether.entity.Member;
 import company.solo.gametogether.jwt.JwtTokenProvider;
 import company.solo.gametogether.jwt.TokenDto;
@@ -27,7 +24,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 
-public class MemberServiceImpl implements MemberService  {
+public class MemberServiceImpl implements MemberService {
 
 
     @Autowired
@@ -57,23 +54,25 @@ public class MemberServiceImpl implements MemberService  {
     @Override
     //회원가입 로직
     public MemberDto signUp(SignUpDto signUpDto) {
-        log.info("log.info ={}",signUpDto.getUsername());
-        log.info("log.info ={}",signUpDto.getPassword());
+        log.info("log.info ={}", signUpDto.getUsername());
+        log.info("log.info ={}", signUpDto.getPassword());
         if (memberJpaRepository.existsByUsername(signUpDto.getUsername())) {
-            log.info("log.info ={}",signUpDto.getUsername());
+            log.info("log.info ={}", signUpDto.getUsername());
             throw new IllegalArgumentException("이미 사용 중인 사용자 이름입니다.");
         }
         // Password 암호화
         String encodedPassword = passwordEncoder.encode(signUpDto.getPassword());
-        log.info("log.info={}",encodedPassword);
+        log.info("log.info={}", encodedPassword);
         List<String> roles = new ArrayList<>();
         roles.add("USER");  // USER 권한 부여
         return MemberDto.toDto(memberJpaRepository.save(signUpDto.toEntity(encodedPassword, roles)));
     }
 
+
+    // 회원 유저이름 찾기
     @Override
-    public MemberFindUserNameDto findUserNames(String email) {
-        return memberJpaRepository.findByUsernames(email);
+    public SignInDto findByEmail(String email) {
+        return memberJpaRepository.findByEmail(email);
     }
 
     //회원 정보 수정
@@ -90,19 +89,30 @@ public class MemberServiceImpl implements MemberService  {
             memberJpaRepository.save(member); // 변경된 회원 정보 저장
         }
     }
-
+    
+    // 회원 삭제
     @Transactional(readOnly = false)
     @Override
     public void memberDelete(Long id) {
         Optional<Member> findMember = memberJpaRepository.findById(id);
-        if(findMember.isPresent()){
+        if (findMember.isPresent()) {
             Member member = findMember.get();
             memberJpaRepository.delete(member);
         }
     }
 
 
+
+
     //회원 아이디 찾기
+    public Member findByMember(Long id) {
+        Optional<Member> member = memberJpaRepository.findById(id);
+        if (member.isPresent()) {
+            Member members = member.get();
+            return members;
+        }
+        return null;
+    }
 
 
 }

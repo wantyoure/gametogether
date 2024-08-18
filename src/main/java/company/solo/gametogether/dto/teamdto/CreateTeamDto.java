@@ -16,6 +16,6 @@ public class CreateTeamDto {
     private Long memberId;
     private String teamName;
     private String teamContent;
-    private int teamCounting = 1;
+    private int teamCounting ;
 
 }

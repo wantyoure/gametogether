@@ -24,24 +24,25 @@ public class Team extends BaseTimeEntity {
     private int teamCounting; //팀 인원
 
     //팀 생성을 했을 시 TeamRoom도 같이 생겨야한다.
-    @OneToMany(mappedBy = "team")
+    @OneToMany(mappedBy = "team",cascade = CascadeType.ALL)
     private List<TeamRoom> teamRooms = new ArrayList<>();
 
 
     //연관관계 메소드 보류
     public void getTeam(TeamRoom teamRoom) {
-        this.teamRooms =teamRooms;
-        teamRoom.addTeam(this);
+        teamRooms.add(teamRoom);
+        teamRoom.setTeam(this);
     }
     //생성 메소드
 
     // 비즈니스 로직 보류 각만 잡자
 
     //멤버가 추가 될 때마다 teamCounting ++ 되는 것
-    public static void count() {
-
+    // 멤버가 추가될 때 teamCounting 증가 메소드
+    public void addMember() {
+        this.teamCounting++;
     }
-
-
-
+    public void minusMember() {
+      this.teamCounting--;
+    }
 }

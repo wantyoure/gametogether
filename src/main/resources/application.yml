@@ -1,3 +1,6 @@
+
+
+
 spring:
   datasource:
     url: jdbc:h2:tcp://localhost/~/game
@@ -7,7 +10,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         format_sql: true
@@ -19,3 +22,4 @@ logging:
 
 jwt:
   secret: 64461c01c1af406da538b9c48d801ce59142452199fc112fb5404c8e7e98e3ff
+

@@ -8,9 +8,9 @@ import lombok.Data;
 @Data
 @Builder
 public class TeamDto {
-
-    private String teamName;
-    private String teamContent;
+    private Long id;
+    private String teamName; //팀 이름
+    private String teamContent; // 팀 컨텐츠
     private int teamCounting; //팀 인원
 
 

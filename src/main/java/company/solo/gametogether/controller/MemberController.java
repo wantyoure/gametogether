@@ -1,10 +1,7 @@
 package company.solo.gametogether.controller;
 
 
-import company.solo.gametogether.dto.memberdto.MemberDto;
-import company.solo.gametogether.dto.memberdto.MemberUpdate;
-import company.solo.gametogether.dto.memberdto.SignInDto;
-import company.solo.gametogether.dto.memberdto.SignUpDto;
+import company.solo.gametogether.dto.memberdto.*;
 import company.solo.gametogether.entity.Member;
 import company.solo.gametogether.jwt.TokenDto;
 import company.solo.gametogether.repository.MemberJpaRepository;
@@ -29,7 +26,7 @@ public class MemberController {
     private final MemberJpaRepository memberJpaRepository;
 
     //회원 가입
-    @PostMapping("sign-up")
+    @PostMapping("/sign-up")
     public ResponseEntity<String> signUp(@RequestBody SignUpDto signUpDto) {
         log.info("log={}", signUpDto.getUsername());
         MemberDto saveMemberDto = memberServiceImpl.signUp(signUpDto);
@@ -49,19 +46,21 @@ public class MemberController {
         log.info("jwtToken accessToken = {}, refreshToken = {}", jwtToken.getAccessToken(), jwtToken.getRefreshToken());
         return jwtToken;
     }
-    /*//아이디 찾기
+
+    //아이디 찾기
     @GetMapping("/find-user")
     public String findUserName(@RequestBody String email) {
-        MemberFindUserNameDto userNames = memberServiceImpl.findUserNames(email);
-        return userName.getUsername();
-    }*/
+        SignInDto userNames = memberServiceImpl.findByEmail(email);
+        System.out.println("유저네임 =" + userNames);
+        return userNames.getUsername();
+    }
 
 
     //회원 정보 수정
     @PutMapping("/{id}")
     public String memberUpdate( @PathVariable("id") Long id,@RequestBody MemberUpdate memberUpdate) {
         memberUpdate.setId(id);
-       memberServiceImpl.memberUpdate(memberUpdate);
+        memberServiceImpl.memberUpdate(memberUpdate);
         return "회원 변경 완료되었습니다";
     }
 
@@ -81,12 +80,6 @@ public class MemberController {
     public List<Member> list() {
         return memberJpaRepository.findAll();
     }
-
-    @PostMapping("/test")
-    public String test() {
-        return "success";
-    }
-
 
 
 }

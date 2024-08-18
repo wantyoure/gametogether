@@ -15,7 +15,7 @@ public class TeamRoom {
     @Column(name = "team_room")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
@@ -26,10 +26,26 @@ public class TeamRoom {
         this.member = member;
         member.getTeamRooms().add(this);
     }
+
+    public void removeMember() {
+        if (this.member != null) {
+            this.member.getTeamRooms().remove(this);
+            this.member = null;
+        }
+    }
     public void addTeam(Team team) {
         this.team = team;
         team.getTeamRooms().add(this);
     }
+
+    public void removeTeam() {
+        if (this.team != null) {
+            this.team.getTeamRooms().remove(this);
+            this.team = null;
+        }
+    }
+
+
 
 
 }

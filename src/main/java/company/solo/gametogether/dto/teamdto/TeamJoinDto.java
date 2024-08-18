@@ -13,5 +13,5 @@ public class TeamJoinDto {
 
     private Long teamId;
     private Long memberId;
-    private Long teamRoomId;
+
 }
