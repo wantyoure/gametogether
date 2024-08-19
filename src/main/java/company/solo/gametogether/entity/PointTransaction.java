@@ -14,8 +14,8 @@ public class PointTransaction extends BaseTimeEntity {
     @Id @GeneratedValue
     @Column(name = "point_transaction_id")
     private Long id;
-    private int deal_point;
-    private String history;
+    private int dealPoint;
+    private int history; //사용 내역
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
