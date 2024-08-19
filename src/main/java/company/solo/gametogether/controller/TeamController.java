@@ -1,18 +1,10 @@
 package company.solo.gametogether.controller;
-
-import company.solo.gametogether.dto.chatdto.ChatDto;
 import company.solo.gametogether.dto.teamdto.*;
 import company.solo.gametogether.entity.Team;
 import company.solo.gametogether.repository.TeamJpaRepository;
 import company.solo.gametogether.service.teamservice.TeamServiceImpl;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.bridge.Message;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
