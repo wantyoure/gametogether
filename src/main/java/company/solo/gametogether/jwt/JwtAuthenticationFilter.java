@@ -16,8 +16,6 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     @Autowired
     private final JwtTokenProvider jwtTokenProvider;
 
-
-
     //인증 필터
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {

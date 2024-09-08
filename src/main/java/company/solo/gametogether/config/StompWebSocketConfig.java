@@ -18,11 +18,13 @@ public class StompWebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     private final CustomChannelInterceptor customChannelInterceptor;
 
+
+
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws") // 여기로 웹소켓 생성
-                .setAllowedOrigins("*")
-                .setAllowedOriginPatterns("*");
+
+        registry.addEndpoint("/ws") // stomp 설정
+                .setAllowedOrigins("*");
     }
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {

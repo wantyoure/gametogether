@@ -32,12 +32,21 @@ public class FriendServiceImpl implements FriendService{
     @Transactional
     @Override
     public void createFriend(Friend friend) {
-        if (!friend.getMemberId().equals(friend.getFriendId())) {
 
+        if (!friend.getMemberId().equals(friend.getFriendId())) { //Id가 같지 않으면
             friendRepository.save(friend);
         }
+        // 양방향으로 할 수 있게끔 해야한다 그래서 두번 같은 로직을 씀
+        if (friendRepository.existsByMemberIdAndFriendId(friend.getFriendId(),friend.getMemberId()) == true) {
+            throw new IllegalArgumentException("이미 친구입니다.");
+        }
+
+        if (friendRepository.existsByMemberIdAndFriendId(friend.getMemberId(),friend.getFriendId()) == true) {
+            throw new IllegalArgumentException("이미 친구입니다.");
+        }
+
         if (!memberJpaRepository.existsById(friend.getMemberId()) || !memberJpaRepository.existsById(friend.getId())) {
-            throw new IllegalArgumentException("존재하지 않은 회원입니다"); //TODO 이부분을 이렇게 써도 될까? 아니면 다른 방법으로 exception을 해야할까?
+            throw new IllegalArgumentException("존재하지 않은 회원입니다"); //TODO 이부분을 이렇게 써도 될까? 아니면 다른 방법으로 exception을 해야할까? *글로벌 exception 써야함*
         }
 
     }
@@ -45,7 +54,7 @@ public class FriendServiceImpl implements FriendService{
     //친구 목록 //TODO 추가로 프로필을 가져다가 return 해줘야하는데 임시로 해봄
     @Override
     public List<FriendListDto> friendList(Long memberId) {
-        List<Friend> findFriend = friendRepository.findByIdAll(memberId);
+        List<Friend> findFriend = friendRepository.findAllById(memberId);
         List<FriendListDto> friendListDtos = findFriend.stream()
                 .map(friend -> memberJpaRepository.findById(friend.getFriendId()))
                 .filter(Optional::isPresent)

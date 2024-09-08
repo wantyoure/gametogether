@@ -12,14 +12,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Slf4j
-@RestController("/friend")
+@RestController
+@RequestMapping("/friend")
 @RequiredArgsConstructor
 public class FriendController {
 
     private final FriendServiceImpl friendService;
 
     //친구 추가
-    @PostMapping()
+    @PostMapping
     public void createFriend(@RequestBody Friend friend) {
         friendService.createFriend(friend);
     }

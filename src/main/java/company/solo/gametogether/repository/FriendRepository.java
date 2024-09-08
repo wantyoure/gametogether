@@ -11,9 +11,11 @@ import java.util.List;
 public interface FriendRepository extends JpaRepository<Friend,Long> {
 
 
-    @Query("select f from friend f where f.memberId = : memberId")
-    List<Friend> findByIdAll(@Param("memberId") Long memberId);
+    @Query("select f from Friend f where f.memberId = :memberId")
+    List<Friend> findAllById (@Param("memberId") Long memberId);
     @Modifying
-    @Query("delete from friend f where f.memberId = : memberId and f.friendId = : friendId")
+    @Query("delete from Friend f where f.memberId = :memberId and f.friendId = :friendId")
     void deleteByMemberAndFriend(@Param("memberId") Friend memberId,@Param("friendId") Friend friendId);
+
+    boolean existsByMemberIdAndFriendId(Long memberId, Long friendId);
 }

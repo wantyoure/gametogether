@@ -25,7 +25,15 @@ public class MemberController {
     private final MemberServiceImpl memberServiceImpl;
     private final MemberJpaRepository memberJpaRepository;
 
+
+    //회원 테스트
+    @PostMapping("/test")
+    public String test() {
+        return "테스트 완료";
+    }
+
     //회원 가입
+    //TODO 사실상 동시성 이슈가 발생할 수 있지만 이메일을 유니크하게 만들면 어느정도 막을 수 있다
     @PostMapping("/sign-up")
     public ResponseEntity<String> signUp(@RequestBody SignUpDto signUpDto) {
         log.info("log={}", signUpDto.getUsername());

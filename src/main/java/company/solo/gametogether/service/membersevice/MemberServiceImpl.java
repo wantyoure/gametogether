@@ -68,7 +68,6 @@ public class MemberServiceImpl implements MemberService {
         return MemberDto.toDto(memberJpaRepository.save(signUpDto.toEntity(encodedPassword, roles)));
     }
 
-
     // 회원 유저이름 찾기
     @Override
     public SignInDto findByEmail(String email) {
@@ -100,8 +99,6 @@ public class MemberServiceImpl implements MemberService {
             memberJpaRepository.delete(member);
         }
     }
-
-
 
 
     //회원 아이디 찾기

@@ -3,10 +3,10 @@ package company.solo.gametogether.dto.frienddto;
 
 import lombok.*;
 
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 @Builder
 @Data
 

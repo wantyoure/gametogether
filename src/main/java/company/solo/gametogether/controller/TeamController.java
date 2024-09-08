@@ -1,12 +1,18 @@
 package company.solo.gametogether.controller;
+import company.solo.gametogether.dto.chatdto.ResponseDto;
+import company.solo.gametogether.dto.chatdto.UnreadMessageDto;
 import company.solo.gametogether.dto.teamdto.*;
 import company.solo.gametogether.entity.Team;
+import company.solo.gametogether.facade.LettuceLockChatFacade;
 import company.solo.gametogether.repository.TeamJpaRepository;
+import company.solo.gametogether.service.chatservice.ChatServiceImpl;
 import company.solo.gametogether.service.teamservice.TeamServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +25,9 @@ public class TeamController {
 
     private final TeamJpaRepository teamJpaRepository;
     private final TeamServiceImpl teamService;
+    private final SimpMessagingTemplate simpMessagingTemplate;
+    private final ChatServiceImpl chatService;
+    private final LettuceLockChatFacade lettuceLockChatFacade;
 
     //팀 생성
     @PostMapping("/create-team")
@@ -26,6 +35,20 @@ public class TeamController {
         log.info("teamId={}", createTeamDto.getMemberId());
         TeamDto team = teamService.createTeam(createTeamDto);
         return team;
+    }
+    //팀 가입
+    @PostMapping("/team-join")
+    public void teamJoin (@RequestBody TeamJoinDto teamJoinDto) throws InterruptedException {
+        //분산락으로 변경
+        lettuceLockChatFacade.teamJoin(teamJoinDto);
+        simpMessagingTemplate.convertAndSend("/topic/chat/" + teamJoinDto.getTeamId(), "가입이 되었습니다.");
+    }
+
+    //팀 방 클릭시 기존에 있던 메세지와 안 읽은 메세지 동시에 보여주기
+    @GetMapping("/unread-message")
+    public List<ResponseDto> unreadMessage(@RequestBody UnreadMessageDto unreadMessageDto) throws InterruptedException {
+        List<ResponseDto> responseDto = lettuceLockChatFacade.unreadMessage(unreadMessageDto);
+        return  responseDto;
     }
 
     //팀 정보확인

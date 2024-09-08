@@ -64,15 +64,19 @@ public class TeamServiceImpl implements TeamService {
     }
 
     //팀 참여
+    //TODO 동시성 이슈 발생  이유 : 여러 프로세스가 동시에 insert 될 때 정원 4명 초과될 수 있기 때문에 락을 걸어야한다.
     @Transactional(readOnly = false)
     @Override
     public void teamJoin(TeamJoinDto teamJoinDto) {
         Optional<Member> findMember = memberJpaRepository.findById(teamJoinDto.getMemberId());
         Optional<Team> findTeam = teamJpaRepository.findById(teamJoinDto.getTeamId());
-
         if (findTeam.isPresent() || findMember.isPresent()) {
             Member member = findMember.get();
             Team team = findTeam.get();
+            //정원이 4명일 때 참여 안 됌
+            if (team.getTeamCounting() == 4) {
+                throw new IllegalArgumentException("정원이 다 찼습니다");
+            }
             team.addMember(); // 팀 참여를 했을 때
             teamJpaRepository.save(team);
             //팀 룸에 저장

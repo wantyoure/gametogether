@@ -1,5 +1,4 @@
 package company.solo.gametogether.service.chatservice;
-
 import company.solo.gametogether.dto.chatdto.ChatDto;
 import company.solo.gametogether.dto.chatdto.ResponseDto;
 import company.solo.gametogether.dto.chatdto.UnreadMessageDto;
@@ -8,15 +7,14 @@ import company.solo.gametogether.entity.Member;
 import company.solo.gametogether.entity.Team;
 import company.solo.gametogether.entity.UnReadMessage;
 import company.solo.gametogether.repository.*;
-import company.solo.gametogether.service.UnMessageServiceImpl;
-import company.solo.gametogether.service.membersevice.MemberServiceImpl;
+import company.solo.gametogether.service.unmessageservice.UnMessageServiceImpl;
+import company.solo.gametogether.session.SessionTeamIdManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -35,20 +33,17 @@ public class ChatServiceImpl implements ChatService {
     private final UnReadMessageJpaRepository unReadMessageJpaRepository;
     private final UnMessageServiceImpl unMessageService;
 
-
-    //채팅 메세지 저장
+    //채팅 메세지 저장 TODO 단순히 채팅 저장만 하는 로직이였음 그외로 readCount and 안 읽은 메세지까지 저장 해야함
     @Transactional(readOnly = false)
     @Override
     public Chat createChat(ChatDto chatDto) {
         Optional<Member> findMember = memberJpaRepository.findById(chatDto.getMemberId());
         Optional<Team> findTeam = teamJpaRepository.findById(chatDto.getTeamId());
-        if (findTeam.isPresent()) { //TODO 오 ;;
+        if (findTeam.isPresent()) {
             Team team = findTeam.get();
             Member member = findMember.get();
-            //int totalCount = team.getTeamCounting();
             int teamCounting = teamJpaRepository.findTeamCountingById(team.getId());//팀에 소속된 인원들 가져오기
-            log.info("teamCounting={}", teamCounting);
-            //TODO 이부분 수정 chatService
+
             Chat createChat = Chat.builder()
                     .messageContent(chatDto.getMessageContent())
                     .team(team)
@@ -96,7 +91,6 @@ public class ChatServiceImpl implements ChatService {
         return responseDtos;
     }
 
-
     //팀 아이디 추출 메서드
 
     public String getTeamId(String id) {
@@ -111,19 +105,15 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Transactional(readOnly = false)
+    //TODO 동시성 이슈 발생 가능!!
     // 채팅 메세지 저장 하고 안 읽은 메세지 저장하는 것
-    public ResponseDto createChatAndHandleUnreadMessages(Long teamId,ChatDto chatDto) {
-        Chat chat = createChat(chatDto); // 채팅 메세지가 저장되고
-        log.info("chat={}",chat.getId());
-        log.info("chatMember={}",chat.getUsername());
-        List<Long> findMembers = teamRoomJpaRepository.findMemberIdsByTeamId(teamId); // 팀에 소속된 멤버들만 가져오기
-        for (Long findMember : findMembers) {
+    public ResponseDto createChatAndHandleUnreadMessages(Long teamId, ChatDto chatDto) {
+        Chat chat = createChat(chatDto); // 채팅 메세지 저장
+        List<Long> findMembersId = teamRoomJpaRepository.findMemberIdsByTeamId(teamId); // 팀에 소속된 멤버들만 가져오기
+        for (Long findMember : findMembersId) {
             Optional<Member> findMemberId = memberJpaRepository.findById(findMember);
             if (findMemberId.isPresent()) {
                 Member member = findMemberId.get();
-                log.info("findMemberId={}", member.getId());
-                log.info("findMember={}",member.getUsername());
-                log.info("chat={}",chat.getUsername());
                 boolean isRead = member.getUsername().equals(chat.getUsername()); //ture
                 log.info("isRead={}",isRead);
                 UnReadMessage unRead = UnReadMessage.builder()
@@ -134,6 +124,7 @@ public class ChatServiceImpl implements ChatService {
                 unReadMessageJpaRepository.save(unRead);
             }
         }
+        //돌려주는 로직
         int unreadCount = chat.getUnreadCount();
         ResponseDto response = ResponseDto.builder().messageContent(chat.getMessageContent())
                 .username(chat.getUsername())
