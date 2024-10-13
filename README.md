@@ -1,6 +1,6 @@
 # 게임 투게더(Game Together)
 
-[*여기에 사진*]
+![로고](/image/로고.PNG)
 
 ## Project Overview (프로젝트 개요)
 
@@ -17,26 +17,22 @@
 #### Link **[와이어프레임](https://www.notion.so/090491abfd454f7ea36058537a53b082?pvs=4)** 자세히 보기
 ----------
 
-## 요구사항 분석
-*[이미지 추가할지 고민]*
-
-#### Link **[요구사항 분석](https://docs.google.com/spreadsheets/d/1eS-Y4_XyA8aJtMrL66qQhI5yUS8aRR4lkqZ4Qz3ew-8/edit?gid=0#gid=0)** 자세히 보기
-----------
-
 ## ERD 설계
 ![ERD 설계](/image/ERD.PNG)
-
-
 #### Link **[ERD 설계](https://www.erdcloud.com/d/5NmrYxbGZbvqWiNnd)** 자세히 보기
 
 ------
 
-## API 문서화
-*[이미지 추가할지 고민]*
 
+## 요구사항 분석
+#### Link **[요구사항 분석](https://docs.google.com/spreadsheets/d/1eS-Y4_XyA8aJtMrL66qQhI5yUS8aRR4lkqZ4Qz3ew-8/edit?gid=0#gid=0)** 자세히 보기
+
+----------
+
+
+## API 문서화
 #### Link **[API 문서화](https://www.notion.so/8d3ade640362481e896499e7697343da?pvs=4)** 자세히 보기
 
-*[사실 스웨거로 만들 수 있는데 그건 고민좀 해봐야 함]*
 
 ------
 
@@ -46,26 +42,24 @@
 
 ## Stack
 기술 스택
- - **Java**
- - **Spring**
- - **SpringBoot**
- - **JPA**
+ - **Java**  -  version 17
+ - **Spring** verssion 
+ - **SpringBoot** 
+ - **JPA** - verssion 0.11.5 
+ - **STOPM** version: 2.3.3-1
  - **MYSQL**
  - **Redis**
  - **Git**
-
-[*기술 스택을 더 쓸까? 아니면 그냥 내가 설명할 수 있는 기술 스택만 쓸까?*]
 
  >자바언어를 선택한 이유?
  
  - 객체지향적(OOP)를 통해서 확장가능성과 유연성을 갖춰 코드의 재사용성이 용이합니다 
  - JVM 기술을 이용하여 어떠한 운영체제에서도 실행될 수 있습니다
- - [*하나 더 쓸까?*]
 --------------------------
 
 ## 아키텍처 구조
 *[아키텍처는 AWS랑 CI/CD랑 확장을 하고 만드는게 좋을지 고민중이다]*
-
+![아키텍처](/gametogether/image/아키텍처%20(2).png)
 > 3 layerd architecture
 
  
@@ -91,6 +85,15 @@
 
  4.순환 참조 발생 (DTO를 쓰는 이유)
  
+
+
+ 
+
+ 
+
+ 
+ 
+
 
 
  
